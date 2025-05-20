@@ -38,30 +38,35 @@
 
 ### Структура проекта
 ```
-/CheckingDivisibility
+/CheckingDivisibility.
 ├── constants
-│   └── constants.h
+│   ├── constants.h
+│   ├── error_messages.h
+│   ├── errors.html
+│   └── http_status.h
 ├── css
 │   └── style.css
 ├── input
 │   ├── input.c
 │   └── input.h
-├── main.c
-│── Makefile
-├── run.sh
 ├── mongoose
 │   ├── mongoose.c
 │   └── mongoose.h
+├── router
+│   ├── router.c
+│   └── router.h
 ├── templase
 │   ├── divisibility.html
 │   ├── error.html
 │   └── login.html
-│── README.md       
+│── .clang-format       
 │── .gitignore       
-│── .clang-format        
+│── Makefile
+├── README.md
+│── main.c
+├── run.sh
 ```
 
- 
 
 ## Сборка и запуск проекта
 **Для сборки программы:**
