@@ -29,7 +29,8 @@ static void handle_logout(struct mg_connection* c) {
 static void handle_login(struct mg_connection*   c, 
 			 struct mg_http_message* hm) {
 
-    char        username[100], password[100];
+    char        username[100], 
+    		password[100];
     const char* expected_user = getenv("LOGIN_USER");
     const char* expected_pass = getenv("LOGIN_PASS");
 
@@ -197,7 +198,7 @@ static void fn(struct mg_connection* c,
 
 int main (void) {
     int ret = 0;   // флаг возвращаемого значения
-                   //
+                   
     if (!getenv ("LOGIN_USER") || !getenv ("LOGIN_PASS")) {
         fprintf (stderr,
                  "Error: LOGIN_USER and LOGIN_PASS environment variables must be set\n");
