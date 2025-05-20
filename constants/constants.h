@@ -12,5 +12,6 @@
 // MIME-типы
 #define CONTENT_TYPE_HTML "Content-Type: text/html\r\n"
 #define CONTENT_TYPE_CSS "Content-Type: text/css\r\n"
+#define CONTENT_TYPE_TEXT_PLAIN "Content-Type: text/plain\r\n"
 
 #endif   // CONSTANTS_H
