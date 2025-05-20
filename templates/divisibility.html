@@ -1,0 +1,106 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверка делимости</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="content">
+        <div class="main-section">
+            <div class="del">
+                <h2>Проверка делимости</h2>
+                <form id="divForm">
+                    <div>
+                        <label for="dividend">Делимое:</label>
+                        <input type="number" id="dividend" name="dividend" required placeholder="Введите делимое" />
+                    </div>
+
+                    <div>
+                        <label for="divisor">Делитель:</label>
+                        <input type="number" id="divisor" name="divisor" required placeholder="Введите делитель" />
+                    </div>
+
+                    <div>
+                        <button type="submit">Проверить делимость</button>
+                    </div>
+
+                    <div>
+                        <label for="result">Результат:</label>
+                        <input type="text" id="result" readonly />
+                    </div>
+                </form>
+            </div>
+
+            <div class="description">
+                <h1>Калькулятор проверки делимости</h1>
+                <p>
+                    Калькулятор проверки делимости - это удобный онлайн инструмент, 
+                    позволяющий быстро определить, делится ли одно число на другое 
+                    без остатка. Это упрощает процесс проверки делимости, особенно при 
+                    работе с большими числами или сложными вычислениями.
+                </p>
+                <h2 class="description-title">Формула калькулятора делимости</h2>
+                <p>
+                    Формула, используемая калькулятором делимости проста:
+                </p>
+                <code>A % B = 0</code>
+                <p>
+                    Где:
+                    <ul>
+                        <li>A - делимое,</li>
+                        <li>B - делитель (≠ 0),</li>
+                        <li>A % B - остаток от деления.</li>
+                    </ul>
+                    Если остаток равен нулю, то A делится на B без остатка.
+                </p>
+                <h2 class="description-title">Описание функционала страницы</h2>
+                <p>
+                    Страница позволяет ввести два числа - делимое и делитель - мгновенно 
+                    определить, делится ли первое число на второе без остатка. Результат 
+                    отображается с пояснением.
+                </p>
+                <h3>Как работает?</h3>
+                <p>
+                    Пользователь вводит делимое и делитель, чтобы проверить, 
+                    делится ли первое число на второе без остатка. В случае, если 
+                    делимое делится на делитель с остатком, будет выведен остаток от 
+                    деления двух чисел.
+                </p>
+                <div class="exampl">
+                    <h3>Пример проверки делимости:</h3>
+                    <p>
+                        Предположим, что мы хотим проверить, делится ли 24 на 6.
+                        В поле число вводится 24, в поле делитель вводится 6, затем
+                        нажимается кнопка "Проверить делимость". Калькулятор обработает
+                        входные данные и отобразит результат, указывающий, делится ли
+                        24 на 6 без остатка или выведет остаток от деления.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('divForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const dividend = document.getElementById('dividend').value;
+            const divisor = document.getElementById('divisor').value;
+            
+            try {
+                const response = await fetch(`/div-submit?dividend=${dividend}&divisor=${divisor}`);
+                const result = await response.text();
+                
+                document.getElementById('result').value = result;
+            } catch (error) {
+                document.getElementById('result').value = "Ошибка при проверке делимости";
+            }
+        });
+    </script>
+</body>
+</html>
