@@ -7,6 +7,7 @@
     - [Задачи проекта](#основные-задачи)
     - [Структура проекта](#структура-проекта)
 - [Сборка и запуск](#сборка-и-запуск-проекта)
+- [Задание на защиту](#задание-на-защиту)
 - [Вывод](#вывод)
 
 
@@ -83,6 +84,113 @@ make run
 ```sh
 make clean
 ```
+
+## Задание на защиту
+**Условие:** Необходимо изменить часть кода, который обрабатывает событие и сделать код читаемым.
+---
+Код обработчика событий до изменений:
+```sh
+// Обработчик событий
+static void fn (struct mg_connection* c, int ev, void* ev_data) {
+    if (ev != MG_EV_HTTP_MSG) return;
+
+    struct mg_http_message* hm = (struct mg_http_message*) ev_data;
+
+    if (mg_strcmp (hm->uri, mg_str (ROUTE_STYLES)) == 0) {
+        handle_css_request (c);
+    } else if (mg_strcmp (hm->uri, mg_str (ROUTE_LOGOUT)) == 0) {
+        handle_logout (c);
+    } else if (mg_strcmp (hm->uri, mg_str (ROUTE_LOGIN)) == 0 &&
+               mg_strcmp (hm->method, mg_str ("POST")) == 0) {
+        handle_login (c, hm);
+    } else if (!authenticated) {
+        // Неавторизован — показать форму логина
+        char* response = read_file (PATH_LOGIN_HTML);
+        mg_http_reply (c, 200, CONTENT_TYPE_HTML, "%s", response);
+        free (response);
+    } else if (mg_strcmp (hm->uri, mg_str (ROUTE_DIV_SUBMIT)) == 0) {
+        handle_get_div_check (c, hm);
+    } else if (mg_strcmp (hm->uri, mg_str (ROUTE_DIV_FORM)) == 0 ||
+               mg_strcmp (hm->uri, mg_str ("/")) == 0 ||
+               mg_strcmp (hm->uri, mg_str ("/div")) == 0) {
+        handle_div_page (c);
+    } else {
+        mg_http_reply (c, 404, "", "Not Found");
+    }
+}
+```
+---
+Код обработчика событий после изменений:
+```sh
+// Обработчик событий
+static void fn(struct mg_connection* c, 
+	           int ev,
+	           void* ev_data) {
+
+    bool                    processed = false;
+    struct mg_http_message* hm        = NULL;
+    Route                   route     = ROUTE_UNKNOWN;
+    char*                   response  = NULL;
+
+    if (ev == MG_EV_HTTP_MSG) {
+        hm    = (struct mg_http_message*) ev_data;
+        route = resolve_route(hm);
+        // Обработка неавторизованных пользователей
+        if (!authenticated && 
+	        route != ROUTE_LOGIN && 
+	        route != ROUTE_STYLES) {
+
+            response = read_file(PATH_LOGIN_HTML);
+            mg_http_reply(c, HTTP_OK, 
+			              CONTENT_TYPE_HTML, 
+			              "%s", response);
+            processed = true;
+        }
+        // Обработка маршрутов, если запрос еще не обработан
+        if (!processed) {
+            switch (route) {
+            case ROUTE_STYLES:
+                handle_css_request(c);
+                break;
+
+            case ROUTE_LOGOUT:
+                handle_logout(c);
+                break;
+
+            case ROUTE_LOGIN:
+                if (mg_strcmp (hm->method, mg_str ("POST")) == 0) {
+                    handle_login(c, hm);
+                } else {
+                    mg_http_reply(c, HTTP_METHOD_NOT_ALLOWED, "",
+                                  ERROR_METHOD_NOT_ALLOWED);
+                }
+                break;
+
+            case ROUTE_DIV_SUBMIT:
+                handle_get_div_check(c, hm);
+                break;
+
+            case ROUTE_DIV_FORM:
+            case ROUTE_ROOT:
+                handle_div_page(c);
+                break;
+
+            case ROUTE_UNKNOWN:
+            default:
+                mg_http_reply(c, HTTP_NOT_FOUND, "",
+			                  ERROR_NOT_FOUND);
+                break;
+            }
+        }
+        // Освобождение
+        if (response) {
+            free(response);
+        }
+    }
+}
+```
+Для изменения кода были созданы файлы router.c и router.h, в которых реализована таблица HTTP-маршрутов.
+
 
 ## Вывод
 В результате работы был разработан простой UI-веб-сервер на языке программирования C с использованием библиотеки Mongoose. Были изучены ключевые аспекты создания веб-приложений на низкоуровневом языке.
