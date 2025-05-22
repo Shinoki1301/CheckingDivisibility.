@@ -87,8 +87,7 @@ make clean
 
 ## Задание на защиту
 **Условие:** Необходимо изменить часть кода, который обрабатывает событие и сделать код читаемым.
----
-Код обработчика событий до изменений:
+**Код обработчика событий до изменений:**
 ```sh
 // Обработчик событий
 static void fn (struct mg_connection* c, int ev, void* ev_data) {
@@ -120,12 +119,12 @@ static void fn (struct mg_connection* c, int ev, void* ev_data) {
 }
 ```
 ---
-Код обработчика событий после изменений:
+**Код обработчика событий после изменений:**
 ```sh
 // Обработчик событий
 static void fn(struct mg_connection* c, 
-	           int ev,
-	           void* ev_data) {
+	       int ev,
+	       void* ev_data) {
 
     bool                    processed = false;
     struct mg_http_message* hm        = NULL;
@@ -137,13 +136,13 @@ static void fn(struct mg_connection* c,
         route = resolve_route(hm);
         // Обработка неавторизованных пользователей
         if (!authenticated && 
-	        route != ROUTE_LOGIN && 
-	        route != ROUTE_STYLES) {
+	    route != ROUTE_LOGIN && 
+	    route != ROUTE_STYLES) {
 
             response = read_file(PATH_LOGIN_HTML);
             mg_http_reply(c, HTTP_OK, 
-			              CONTENT_TYPE_HTML, 
-			              "%s", response);
+			  CONTENT_TYPE_HTML, 
+			  "%s", response);
             processed = true;
         }
         // Обработка маршрутов, если запрос еще не обработан
@@ -178,7 +177,7 @@ static void fn(struct mg_connection* c,
             case ROUTE_UNKNOWN:
             default:
                 mg_http_reply(c, HTTP_NOT_FOUND, "",
-			                  ERROR_NOT_FOUND);
+			      ERROR_NOT_FOUND);
                 break;
             }
         }
